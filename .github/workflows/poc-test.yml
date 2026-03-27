@@ -7,15 +7,25 @@ jobs:
   test-exposure:
     runs-on: ubuntu-latest
     steps:
-      - name: Show token exposure
+      - name: Prove token access
         run: |
           echo "=============================================="
           echo "VULNERABILITY TEST: pull_request_target + secrets"
           echo "=============================================="
           echo ""
           echo "This workflow ran because of pull_request_target trigger."
-          echo "The workflow has access to GITHUB_TOKEN."
           echo ""
-          echo "Token value (truncated): ${{ secrets.GITHUB_TOKEN }}"
+          echo "Checking if GITHUB_TOKEN is available..."
+          if [ -n "$GITHUB_TOKEN" ]; then
+            echo "✓ GITHUB_TOKEN is AVAILABLE in this workflow"
+            echo ""
+            echo "Token type: $GITHUB_TOKEN"
+            echo "Token length: ${#GITHUB_TOKEN} characters"
+            echo ""
+            echo "In a real attack, attacker would exfiltrate this token."
+            echo "GitHub masks the token in logs, but it's still accessible."
+          else
+            echo "✗ GITHUB_TOKEN is NOT available"
+          fi
           echo ""
           echo "=============================================="
